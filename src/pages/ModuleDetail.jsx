@@ -5,6 +5,8 @@ import { module1Content } from '../data/module1';
 import { module2Content } from '../data/module2';
 import { module3Content } from '../data/module3';
 import { module4Content } from '../data/module4';
+import { module5Content } from '../data/module5';
+import { module6Content } from '../data/module6';
 import CodeBlock from '../components/CodeBlock';
 
 const moduleContents = {
@@ -12,6 +14,8 @@ const moduleContents = {
   'dasar-java': module2Content,
   'method-function': module3Content,
   'oop': module4Content,
+  'gui-netbeans': module5Content,
+  'gui-lanjutan': module6Content,
   // Modul lain akan ditambahkan di sini
 };
 
@@ -107,30 +111,36 @@ export default function ModuleDetail() {
 
                 {section.code && (
                   <CodeBlock
-                    code={section.code.code}
+                    code={section.code.content || section.code.code}
                     language={section.code.language}
                     filename={section.code.filename}
                   />
                 )}
 
-                {section.afterCode && (
-                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-4">
-                    {section.afterCode}
+                {(section.afterCode || section.additionalContent) && (
+                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-4" dangerouslySetInnerHTML={{ __html: section.afterCode || section.additionalContent }}>
                   </div>
                 )}
 
-                {section.code2 && (
+                {(section.code2 || section.additionalCode) && (
                   <CodeBlock
-                    code={section.code2.code}
-                    language={section.code2.language}
-                    filename={section.code2.filename}
+                    code={(section.code2 && (section.code2.content || section.code2.code)) || (section.additionalCode && (section.additionalCode.content || section.additionalCode.code))}
+                    language={(section.code2 && section.code2.language) || (section.additionalCode && section.additionalCode.language)}
+                    filename={(section.code2 && section.code2.filename) || (section.additionalCode && section.additionalCode.filename)}
                   />
                 )}
 
-                {section.afterCode2 && (
-                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-4">
-                    {section.afterCode2}
+                {(section.afterCode2 || section.additionalContent2) && (
+                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-4" dangerouslySetInnerHTML={{ __html: section.afterCode2 || section.additionalContent2 }}>
                   </div>
+                )}
+
+                {section.additionalCode2 && (
+                  <CodeBlock
+                    code={section.additionalCode2.content || section.additionalCode2.code}
+                    language={section.additionalCode2.language}
+                    filename={section.additionalCode2.filename}
+                  />
                 )}
               </div>
             ))}
