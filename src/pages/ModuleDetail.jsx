@@ -3,11 +3,15 @@ import { ArrowLeft, ArrowRight, Clock, BookOpen } from 'lucide-react';
 import { modules } from '../data/modules';
 import { module1Content } from '../data/module1';
 import { module2Content } from '../data/module2';
+import { module3Content } from '../data/module3';
+import { module4Content } from '../data/module4';
 import CodeBlock from '../components/CodeBlock';
 
 const moduleContents = {
   'pengenalan-setup': module1Content,
   'dasar-java': module2Content,
+  'method-function': module3Content,
+  'oop': module4Content,
   // Modul lain akan ditambahkan di sini
 };
 
