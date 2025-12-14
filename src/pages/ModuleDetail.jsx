@@ -14,7 +14,7 @@ const moduleContents = {
   'dasar-java': module2Content,
   'method-function': module3Content,
   'oop': module4Content,
-  'gui-netbeans': module5Content,
+  'gui-dasar': module5Content,
   'gui-lanjutan': module6Content,
   // Modul lain akan ditambahkan di sini
 };
@@ -118,21 +118,25 @@ export default function ModuleDetail() {
                 )}
 
                 {(section.afterCode || section.additionalContent) && (
-                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-4" dangerouslySetInnerHTML={{ __html: section.afterCode || section.additionalContent }}>
-                  </div>
+                  <div
+                    className="text-gray-700 dark:text-gray-300 leading-relaxed mt-4"
+                    dangerouslySetInnerHTML={{ __html: section.afterCode || section.additionalContent }}
+                  />
                 )}
 
                 {(section.code2 || section.additionalCode) && (
                   <CodeBlock
-                    code={(section.code2 && (section.code2.content || section.code2.code)) || (section.additionalCode && (section.additionalCode.content || section.additionalCode.code))}
-                    language={(section.code2 && section.code2.language) || (section.additionalCode && section.additionalCode.language)}
-                    filename={(section.code2 && section.code2.filename) || (section.additionalCode && section.additionalCode.filename)}
+                    code={(section.code2?.content || section.code2?.code) || (section.additionalCode?.content || section.additionalCode?.code)}
+                    language={(section.code2?.language) || (section.additionalCode?.language)}
+                    filename={(section.code2?.filename) || (section.additionalCode?.filename)}
                   />
                 )}
 
                 {(section.afterCode2 || section.additionalContent2) && (
-                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-4" dangerouslySetInnerHTML={{ __html: section.afterCode2 || section.additionalContent2 }}>
-                  </div>
+                  <div
+                    className="text-gray-700 dark:text-gray-300 leading-relaxed mt-4"
+                    dangerouslySetInnerHTML={{ __html: section.afterCode2 || section.additionalContent2 }}
+                  />
                 )}
 
                 {section.additionalCode2 && (
