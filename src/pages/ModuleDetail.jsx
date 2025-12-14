@@ -7,6 +7,8 @@ import { module3Content } from '../data/module3';
 import { module4Content } from '../data/module4';
 import { module5Content } from '../data/module5';
 import { module6Content } from '../data/module6';
+import { module7Content } from '../data/module7';
+import { module8Content } from '../data/module8';
 import CodeBlock from '../components/CodeBlock';
 
 const moduleContents = {
@@ -16,6 +18,8 @@ const moduleContents = {
   'oop': module4Content,
   'gui-dasar': module5Content,
   'gui-lanjutan': module6Content,
+  'database': module7Content,
+  'file-handling': module8Content,
   // Modul lain akan ditambahkan di sini
 };
 
