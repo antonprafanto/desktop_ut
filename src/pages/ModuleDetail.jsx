@@ -9,6 +9,9 @@ import { module5Content } from '../data/module5';
 import { module6Content } from '../data/module6';
 import { module7Content } from '../data/module7';
 import { module8Content } from '../data/module8';
+import { module9Content } from '../data/module9';
+import { module10Content } from '../data/module10';
+import { module11Content } from '../data/module11';
 import CodeBlock from '../components/CodeBlock';
 
 const moduleContents = {
@@ -20,7 +23,9 @@ const moduleContents = {
   'gui-lanjutan': module6Content,
   'database': module7Content,
   'file-handling': module8Content,
-  // Modul lain akan ditambahkan di sini
+  'exception-handling': module9Content,
+  'best-practices': module10Content,
+  'project-akhir': module11Content,
 };
 
 export default function ModuleDetail() {
