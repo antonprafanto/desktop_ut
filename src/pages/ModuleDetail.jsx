@@ -13,6 +13,7 @@ import { module9Content } from '../data/module9';
 import { module10Content } from '../data/module10';
 import { module11Content } from '../data/module11';
 import CodeBlock from '../components/CodeBlock';
+import FormattedContent from '../components/FormattedContent';
 
 const moduleContents = {
   'pengenalan-setup': module1Content,
@@ -105,17 +106,17 @@ export default function ModuleDetail() {
       {/* Content */}
       {content ? (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-8">
-          <div className="prose prose-lg dark:prose-invert max-w-none">
+          <div className="max-w-none">
             {content.sections.map((section, index) => (
-              <div key={section.id} className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="text-blue-600 dark:text-blue-400 mr-3">
-                    {index + 1}.
+              <div key={section.id} className="mb-12 pb-8 border-b border-gray-200 dark:border-gray-700 last:border-0">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold text-sm mr-3">
+                    {index + 1}
                   </span>
                   {section.title}
                 </h2>
-                <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
-                  {section.content}
+                <div className="ml-0">
+                  <FormattedContent content={section.content} />
                 </div>
 
                 {section.code && (
