@@ -23,7 +23,7 @@ const moduleContents = {
   'gui-lanjutan': module6Content,
   'database': module7Content,
   'file-handling': module8Content,
-  'exception-handling': module9Content,
+  'exception-debugging': module9Content,
   'best-practices': module10Content,
   'project-akhir': module11Content,
 };
