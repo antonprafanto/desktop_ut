@@ -181,54 +181,62 @@ export default function FormattedContent({ content }) {
 
   // Parse inline formatting (bold, italic, code)
   const parseInline = (text) => {
-    const parts = [];
-    let currentText = text;
-    let key = 0;
+    if (!text) return null;
 
-    // Pattern untuk bold **text**
-    const boldPattern = /\*\*([^*]+)\*\*/g;
-    // Pattern untuk inline code `text`
-    const codePattern = /`([^`]+)`/g;
-
-    // Split by bold and code patterns
     const segments = [];
-    let lastIndex = 0;
-    let match;
+    let remaining = text;
 
-    // Process all patterns
-    const allPattern = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+    // Process text with multiple patterns
+    while (remaining.length > 0) {
+      // Find next special pattern
+      const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+      const codeMatch = remaining.match(/`(.+?)`/);
 
-    while ((match = allPattern.exec(currentText)) !== null) {
-      // Add text before match
-      if (match.index > lastIndex) {
+      // Determine which comes first
+      let nextMatch = null;
+      let type = null;
+
+      if (boldMatch && codeMatch) {
+        if (boldMatch.index < codeMatch.index) {
+          nextMatch = boldMatch;
+          type = 'bold';
+        } else {
+          nextMatch = codeMatch;
+          type = 'code';
+        }
+      } else if (boldMatch) {
+        nextMatch = boldMatch;
+        type = 'bold';
+      } else if (codeMatch) {
+        nextMatch = codeMatch;
+        type = 'code';
+      }
+
+      if (nextMatch) {
+        // Add text before match
+        if (nextMatch.index > 0) {
+          segments.push({
+            type: 'text',
+            content: remaining.substring(0, nextMatch.index)
+          });
+        }
+
+        // Add matched content
+        segments.push({
+          type: type,
+          content: nextMatch[1]
+        });
+
+        // Update remaining text
+        remaining = remaining.substring(nextMatch.index + nextMatch[0].length);
+      } else {
+        // No more matches, add remaining text
         segments.push({
           type: 'text',
-          content: currentText.substring(lastIndex, match.index)
+          content: remaining
         });
+        break;
       }
-
-      // Add matched content
-      if (match[0].startsWith('**')) {
-        segments.push({
-          type: 'bold',
-          content: match[0].replace(/\*\*/g, '')
-        });
-      } else if (match[0].startsWith('`')) {
-        segments.push({
-          type: 'code',
-          content: match[0].replace(/`/g, '')
-        });
-      }
-
-      lastIndex = match.index + match[0].length;
-    }
-
-    // Add remaining text
-    if (lastIndex < currentText.length) {
-      segments.push({
-        type: 'text',
-        content: currentText.substring(lastIndex)
-      });
     }
 
     // Convert segments to JSX
