@@ -14,8 +14,8 @@ export default function FormattedContent({ content }) {
     const elements = [];
     let currentList = [];
     let currentListType = null; // 'ul' or 'ol'
-    let inCodeBlock = false;
-    let codeLines = [];
+    let inTable = false;
+    let tableRows = [];
 
     const flushList = () => {
       if (currentList.length > 0) {
@@ -43,12 +43,85 @@ export default function FormattedContent({ content }) {
       }
     };
 
+    const flushTable = () => {
+      if (tableRows.length > 0) {
+        const hasHeader = tableRows.length > 0;
+        const headerRow = hasHeader ? tableRows[0] : null;
+        const bodyRows = hasHeader ? tableRows.slice(1) : tableRows;
+
+        elements.push(
+          <div key={elements.length} className="overflow-x-auto my-6">
+            <table className="min-w-full border-collapse border border-gray-300 dark:border-gray-600">
+              {headerRow && (
+                <thead className="bg-gray-100 dark:bg-gray-700">
+                  <tr>
+                    {headerRow.map((cell, idx) => (
+                      <th
+                        key={idx}
+                        className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left font-bold text-gray-900 dark:text-white"
+                      >
+                        {parseInline(cell.trim())}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {bodyRows.map((row, rowIdx) => (
+                  <tr key={rowIdx} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    {row.map((cell, cellIdx) => (
+                      <td
+                        key={cellIdx}
+                        className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300"
+                      >
+                        {parseInline(cell.trim())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        tableRows = [];
+        inTable = false;
+      }
+    };
+
     lines.forEach((line, lineIndex) => {
       const trimmedLine = line.trim();
+
+      // Detect table row (contains |)
+      if (trimmedLine.includes('|')) {
+        flushList();
+
+        // Skip separator lines (|---|---|)
+        if (/^\|[\s-|]+\|$/.test(trimmedLine)) {
+          return;
+        }
+
+        // Parse table row
+        const cells = trimmedLine
+          .split('|')
+          .filter(cell => cell.trim())
+          .map(cell => cell.trim());
+
+        if (cells.length > 0) {
+          tableRows.push(cells);
+          inTable = true;
+        }
+        return;
+      }
+
+      // If we were in a table and hit non-table content, flush it
+      if (inTable) {
+        flushTable();
+      }
 
       // Empty line
       if (!trimmedLine) {
         flushList();
+        flushTable();
         // Add spacing
         if (elements.length > 0) {
           elements.push(<div key={`space-${lineIndex}`} className="h-2" />);
@@ -99,8 +172,9 @@ export default function FormattedContent({ content }) {
       );
     });
 
-    // Flush any remaining list
+    // Flush any remaining list or table
     flushList();
+    flushTable();
 
     return elements;
   };
