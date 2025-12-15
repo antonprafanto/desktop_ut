@@ -90,6 +90,7 @@ export default function FormattedContent({ content }) {
 
     lines.forEach((line, lineIndex) => {
       const trimmedLine = line.trim();
+      const originalLine = line;
 
       // Detect table row (contains |)
       if (trimmedLine.includes('|')) {
@@ -129,19 +130,19 @@ export default function FormattedContent({ content }) {
         return;
       }
 
-      // Numbered list (1. 2. 3.)
-      if (/^\d+\.\s+/.test(trimmedLine)) {
+      // Numbered list (1. 2. 3. or **1.** format)
+      if (/^\d+\.\s+/.test(trimmedLine) || /^\*\*\d+\.\*\*/.test(trimmedLine)) {
         if (currentListType !== 'ol') {
           flushList();
           currentListType = 'ol';
         }
-        const content = trimmedLine.replace(/^\d+\.\s+/, '');
+        const content = trimmedLine.replace(/^\d+\.\s+/, '').replace(/^\*\*\d+\.\*\*\s*/, '');
         currentList.push(content);
         return;
       }
 
-      // Bullet list (-, *)
-      if (/^[-*]\s+/.test(trimmedLine)) {
+      // Bullet list (-, *, or starts with spaces + -)
+      if (/^[-*]\s+/.test(trimmedLine) || /^\s{2,}[-*]\s+/.test(originalLine)) {
         if (currentListType !== 'ul') {
           flushList();
           currentListType = 'ul';
@@ -154,11 +155,21 @@ export default function FormattedContent({ content }) {
       // If we have a list and hit non-list content, flush it
       flushList();
 
-      // Subheading (text followed by colon or text ending with colon)
-      if (/^[A-Z][^:]+:$/.test(trimmedLine) || /^\*\*[^*]+:\*\*/.test(trimmedLine)) {
+      // Subheading with ### or bold text ending with colon
+      if (trimmedLine.startsWith('###')) {
         elements.push(
           <h4 key={lineIndex} className="text-lg font-bold text-gray-900 dark:text-white mt-6 mb-3">
-            {parseInline(trimmedLine.replace(/[*:]/g, ''))}
+            {parseInline(trimmedLine.replace(/^###\s*/, ''))}
+          </h4>
+        );
+        return;
+      }
+
+      // Bold section headings (text with colon at end)
+      if (/^\*\*[^*]+:\*\*$/.test(trimmedLine)) {
+        elements.push(
+          <h4 key={lineIndex} className="text-lg font-bold text-gray-900 dark:text-white mt-6 mb-3">
+            {parseInline(trimmedLine)}
           </h4>
         );
         return;
